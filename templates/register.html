@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShapeShift - Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styleregister.css') }}">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:wght@400;500;700&family=Oswald:wght@700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Navigation bar -->
+    <nav class="navbar">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo przeź.png') }}" alt="logo" class="logo-img">
+            <span>ShapeShift</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('main') }}">Home</a></li>
+            <li><a href="{{ url_for('survey') }}">Survey</a></li>
+            <li><a href="{{ url_for('forum') }}">Forum</a></li>
+            <li><a href="{{ url_for('results') }}">Plan</a></li>
+        </ul>
+        <div class="icons">
+            <span class="icon"><ion-icon name="person-circle-outline"></ion-icon></span>
+            <a href="{{ url_for('login') }}">Log in</a>
+        </div>
+    </nav>
+
+    <main class="login-page-container">
+        <div class="wrapper">
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                <div class="flash-message {{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <form action="/register" method="POST">
+                <h2>Registration</h2>
+
+                <!-- Username -->
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="person"></ion-icon></span>
+                    <input type="text" name="username" placeholder="Username" required>
+                </div>
+
+                <!-- Password -->
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed-outline"></ion-icon></span>
+                    <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                </div>
+
+                <button type="submit">Sign Up</button>
+                <div class="register-link">
+                    <p>Already have an account? <a href="{{ url_for('login') }}">Log in!</a> </p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const inputs = document.querySelectorAll('input[required]');
+
+            for (const input of inputs) {
+                input.oninvalid = function (e) {
+                    e.target.setCustomValidity("");
+                    if (!e.target.validity.valid) {
+                        e.target.setCustomValidity("Please fill in this field");
+                    }
+                };
+
+                input.oninput = function (e) {
+                    e.target.setCustomValidity("");
+                };
+            }
+        });
+    </script>
+
+    <!-- Bottom section -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>ShapeShift</h3>
+                    <p>Your path to better fitness. Personalized workout plans that work.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Fast travel</h3>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('main') }}">Home</a></li>
+                        <li><a href="{{ url_for('survey') }}">Survey</a></li>
+                        <li><a href="{{ url_for('forum') }}">Forum</a></li>
+                        <li><a href="{{ url_for('results') }}">Plan</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Our socials</h3>
+                    <p>Follow our social media to stay up to date:</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ShapeShift. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

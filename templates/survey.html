@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Survey - ShapeShift</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='stylesurvey.css') }}">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Oswald:wght@700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <div class="logo">
+      <img src="{{ url_for('static', filename='images/logo przeź.png') }}" alt="logo" class="logo-img">
+      <span>ShapeShift</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('main') }}">Home</a></li>
+      <li><a href="{{ url_for('survey') }}">Survey</a></li>
+      <li><a href="{{ url_for('forum') }}">Forum</a></li>
+      <li><a href="{{ url_for('results') }}">Plan</a></li>
+    </ul>
+    <div class="icons">
+      <!-- If logged in -->
+      {% if user %}
+      <div class="user-info">
+        <span class="username-display"><i class="fas fa-user-circle"></i> {{ user }}</span>
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+      {% else %}
+      <span class="icon"><ion-icon name="person-circle-outline"></ion-icon></span>
+      <a href="{{ url_for('login') }}">Log in</a>
+      {% endif %}
+
+    </div>
+
+    </div>
+  </nav>
+
+  <section class="survey-content">
+    <div class="container">
+      <div class="survey-card">
+        <h1>Survey</h1>
+        <p>Fill out the form so we can create a personalized plan for you.</p>
+
+        <form id="survey-form">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required>
+
+          <label for="age">Age:</label>
+          <input type="number" id="age" name="age" min="1" required>
+
+          <label for="training-days">Number of training sessions per week:</label>
+          <select id="training-days" name="training-days" required>
+            <option value="1">1 day</option>
+            <option value="2">2 days</option>
+            <option value="3">3 days</option>
+            <option value="4">4 days</option>
+            <option value="5">5 days</option>
+            <option value="6">6 days</option>
+          </select>
+
+          <fieldset>
+            <legend>Experience level:</legend>
+            <div class="radio-group">
+              <div>
+                <input type="radio" id="beginner" name="level" value="beginner" checked>
+                <label for="beginner">Beginner</label>
+              </div>
+              <div>
+                <input type="radio" id="intermediate" name="level" value="intermediate">
+                <label for="intermediate">Intermediate</label>
+              </div>
+              <div>
+                <input type="radio" id="expert" name="level" value="expert">
+                <label for="expert">Expert</label>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Available equipment (select all that apply):</legend>
+            <div class="equipment-grid">
+              <div><input type="checkbox" id="body-only" name="equipment" value="body only"><label for="body-only">Body
+                  only</label></div>
+              <div><input type="checkbox" id="dumbbell" name="equipment" value="dumbbell"><label
+                  for="dumbbell">Dumbbell</label></div>
+              <div><input type="checkbox" id="barbell" name="equipment" value="barbell"><label
+                  for="barbell">Barbell</label></div>
+              <div><input type="checkbox" id="kettlebells" name="equipment" value="kettlebells"><label
+                  for="kettlebells">Kettlebells</label></div>
+              <div><input type="checkbox" id="machine" name="equipment" value="machine"><label for="machine">Machines
+                </label></div>
+              <div><input type="checkbox" id="cable" name="equipment" value="cable"><label for="cable">Cable </label>
+              </div>
+              <div><input type="checkbox" id="bands" name="equipment" value="bands"><label for="bands">Bands</label>
+              </div>
+              <div><input type="checkbox" id="exercise-ball" name="equipment" value="exercise ball"><label
+                  for="exercise-ball">Exercise ball</label></div>
+              <div><input type="checkbox" id="foam-roll" name="equipment" value="foam roll"><label for="foam-roll">Foam
+                  Roller</label></div>
+              <div><input type="checkbox" id="other" name="equipment" value="other"><label for="other">Other</label>
+              </div>
+            </div>
+          </fieldset>
+
+          <button type="submit" class="btn-primary">Create my training plan</button>
+        </form>
+
+        <script src="{{ url_for('static', filename='surveydatabase/logic.js') }}"></script>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const inputs = document.querySelectorAll('input[required]');
+
+      for (const input of inputs) {
+        input.oninvalid = function (e) {
+          e.target.setCustomValidity("");
+          if (!e.target.validity.valid) {
+            e.target.setCustomValidity("Please fill in this field");
+          }
+        };
+
+        input.oninput = function (e) {
+          e.target.setCustomValidity("");
+        };
+      }
+    });
+  </script>
+
+  <!-- Bottom section -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-column">
+          <h3>ShapeShift</h3>
+          <p>Your path to better fitness. Personalized workout plans that work.</p>
+        </div>
+
+        <div class="footer-column">
+          <h3>Fast travel</h3>
+          <ul class="footer-links">
+            <li><a href="{{ url_for('main') }}">Home</a></li>
+            <li><a href="{{ url_for('survey') }}">Survey</a></li>
+            <li><a href="{{ url_for('forum') }}">Forum</a></li>
+            <li><a href="{{ url_for('results') }}">Plan</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Our socials</h3>
+          <p>Follow our social media to stay up to date:</p>
+          <div class="social-icons">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 ShapeShift. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>

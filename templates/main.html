@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ShapeShift</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='stylemain.css') }}">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Oswald:wght@700&display=swap"
+    rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</head>
+
+<body>
+  <!-- Navigation bar -->
+  <nav class="navbar">
+    <div class="logo">
+      <img src="{{ url_for('static', filename='images/logo przeź.png') }}" alt="logo" class="logo-img">
+      <span>ShapeShift</span>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="{{ url_for('main') }}">Home</a></li>
+      <li><a href="{{ url_for('survey') }}">Survey</a></li>
+      <li><a href="{{ url_for('forum') }}">Forum</a></li>
+      <li><a href="{{ url_for('results') }}">Plan</a></li>
+    </ul>
+
+    <div class="icons">
+
+      <!-- If logged in -->
+      {% if user %}
+      <div class="user-info">
+        <span class="username-display"><i class="fas fa-user-circle"></i> {{ user }}</span>
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+      {% else %}
+      <span class="icon"><ion-icon name="person-circle-outline"></ion-icon></span>
+      <a href="{{ url_for('login') }}">Log in</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- After loging in -->
+  <div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="flash-message {{ category }}">
+      {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Slides (in main section) -->
+  <section class="hero">
+    <div class="slider-container">
+      <img src="{{ url_for('static', filename='images/Photo1.png') }}" alt="Tło fitness 1" class="slider-image active">
+      <img src="{{ url_for('static', filename='images/Photo 2.png') }}" alt="Tło fitness 2" class="slider-image">
+      <img src="{{ url_for('static', filename='images/Photo 3.png') }}" alt="Tło fitness 3" class="slider-image">
+    </div>
+
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <!-- Text change (if logged) -->
+      {% if user %}
+      <h1 class="fade-in-up">WELCOME BACK, {{ user|upper }}!</h1>
+      <p class="fade-in-up-delayed">Ready for your next workout?</p>
+      {% else %}
+      <h1 class="fade-in-up">GET IN YOUR BEST SHAPE</h1>
+      <p class="fade-in-up-delayed">Personalized training plans that work.</p>
+      {% endif %}
+
+      <a href="{{ url_for('survey') }}" class="btn-primary fade-in-up-delayed-more">Start Survey</a>
+    </div>
+  </section>
+
+  <!-- "How it works" section -->
+  <section class="how-it-works reveal-on-scroll">
+    <div class="container">
+      <h2>How to get started?</h2>
+      <div class="features-grid">
+        <article class="feature-card">
+          <i class="fas fa-list-check fa-2x"></i>
+          <h3>Step 1: Fill Out the Survey</h3>
+          <p>Answer a few questions so we can learn about your goals, lifestyle, and preferences.</p>
+        </article>
+        <article class="feature-card">
+          <i class="fas fa-cogs fa-2x"></i>
+          <h3>Step 2: Get Your Plan</h3>
+          <p>Our system will generate a perfectly tailored workout plan for you.</p>
+        </article>
+        <article class="feature-card">
+          <i class="fas fa-chart-line fa-2x"></i>
+          <h3>Step 3: See Results</h3>
+          <p>Track your progress, adjust your plan, and achieve your dream results faster than you think.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom section -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-column">
+          <h3>ShapeShift</h3>
+          <p>Your path to better fitness. Personalized workout plans that work.</p>
+        </div>
+
+        <div class="footer-column">
+          <h3>Fast travel</h3>
+          <ul class="footer-links">
+            <li><a href="{{ url_for('main') }}">Home</a></li>
+            <li><a href="{{ url_for('survey') }}">Survey</a></li>
+            <li><a href="{{ url_for('forum') }}">Forum</a></li>
+            <li><a href="{{ url_for('results') }}">Plan</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Our socials</h3>
+          <p>Follow our social media to stay up to date:</p>
+          <div class="social-icons">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 ShapeShift. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Slider -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const images = document.querySelectorAll('.slider-image');
+      let currentImageIndex = 0;
+
+      if (images.length > 0) {
+
+        images[currentImageIndex].classList.add('active');
+
+        function showNextImage() {
+          images[currentImageIndex].classList.remove('active');
+          currentImageIndex = (currentImageIndex + 1) % images.length;
+          images[currentImageIndex].classList.add('active');
+        }
+
+        setInterval(showNextImage, 5000);
+      }
+    });
+  </script>
+
+</body>
+
+</html>

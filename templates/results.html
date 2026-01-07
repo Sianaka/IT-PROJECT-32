@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Your Plans - ShapeShift</title>
+		<link
+			rel="stylesheet"
+			href="{{ url_for('static', filename='styleresults.css') }}" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Oswald:wght@700&display=swap"
+			rel="stylesheet" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+		<script
+			type="module"
+			src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+		<script
+			nomodule
+			src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+		<script src="{{ url_for('static', filename='surveydatabase/logic.js') }}"></script>
+	</head>
+	<body>
+		<nav class="navbar">
+			<div class="logo">
+				<img
+					src="{{ url_for('static', filename='images/logo przeź.png') }}"
+					alt="logo"
+					class="logo-img" />
+				<span>ShapeShift</span>
+			</div>
+			<ul class="nav-links">
+				<li><a href="{{ url_for('main') }}">Home</a></li>
+				<li><a href="{{ url_for('survey') }}">Survey</a></li>
+				<li><a href="{{ url_for('forum') }}">Forum</a></li>
+				<li><a href="{{ url_for('results') }}">Plan</a></li>
+			</ul>
+			<div class="icons">
+				{% if user %}
+				<div class="user-info">
+					<span class="username-display"
+						><i class="fas fa-user-circle"></i> {{ user }}</span
+					>
+					<a href="{{ url_for('logout') }}" class="logout-btn">
+						<i class="fas fa-sign-out-alt"></i> Logout
+					</a>
+				</div>
+				{% else %}
+				<span class="icon"
+					><ion-icon name="person-circle-outline"></ion-icon
+				></span>
+				<a href="{{ url_for('login') }}">Log in</a>
+				{% endif %}
+			</div>
+		</nav>
+
+		<section class="plan-content">
+			<div class="container">
+				<h1>Your Workout History</h1>
+				<div class="plans-grid">
+					{% if plans %} {% for plan in plans %}
+					<div class="plan-card">
+						<div class="card-header">
+							<h3>{{ plan.name }} ({{ plan.age }})</h3>
+							<div class="header-right">
+								<span class="plan-date">{{ plan.created_at }}</span>
+								<i
+									class="fas fa-trash-alt delete-icon"
+									title="Delete plan"
+									onclick="deletePlan({{ plan.id }}, this)"></i>
+							</div>
+						</div>
+						<p><strong>Level:</strong> {{ plan.level|capitalize }}</p>
+						<p><strong>Goal:</strong> {{ plan.plan_data.planName }}</p>
+						<button
+							class="btn-primary open-modal"
+							data-target="modal-{{ plan.id }}">
+							Show Details
+						</button>
+					</div>
+
+					<div id="modal-{{ plan.id }}" class="modal-overlay">
+						<div class="modal-content">
+							<span class="close-modal">&times;</span>
+							<div class="modal-header">
+								<h2>{{ plan.plan_data.planName }}</h2>
+								<p>Created on {{ plan.created_at }}</p>
+							</div>
+							<div class="modal-body">
+								{% for day in plan.plan_data.trainingDays %} {% set day_index =
+								loop.index0 %}
+
+								<div class="workout-day-box">
+									<h3>Day {{ loop.index }}: {{ day.name }}</h3>
+									<div class="exercise-list">
+										{% for ex in day.exercises %}
+										<div
+											class="exercise-item"
+											id="ex-{{ plan.id }}-{{ day_index }}-{{ loop.index0 }}">
+											<div class="exercise-header">
+												<h4>{{ ex.name }}</h4>
+												<div class="exercise-actions">
+													<i
+														class="fas fa-sync-alt swap-icon"
+														title="Swap exercise"
+														onclick="swapExercise('{{ plan.id }}', {{ day_index }}, {{ loop.index0 }}, '{{ ex.primaryMuscles[0] }}', '{{ plan.level }}')"></i>
+
+													<i
+														class="fas fa-undo undo-icon"
+														title="Undo swap"
+														style="display: none"
+														onclick="undoSwap('{{ plan.id }}', {{ day_index }}, {{ loop.index0 }})"></i>
+												</div>
+											</div>
+											<ol class="instruction-list">
+												{% for step in ex.instructions %}
+												<li>{{ step }}</li>
+												{% endfor %}
+											</ol>
+										</div>
+										{% endfor %}
+									</div>
+								</div>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+					{% endfor %} {% else %}
+					<p>No plans found. Complete the survey!</p>
+					{% endif %}
+				</div>
+			</div>
+		</section>
+
+		<div id="delete-modal" class="modal-overlay" style="display: none">
+			<div class="modal-content delete-confirm">
+				<h3>Delete Workout Plan</h3>
+				<p>
+					Are you sure you want to permanently remove this plan? This action
+					cannot be undone.
+				</p>
+				<div class="modal-actions">
+					<button id="cancel-delete" class="btn-secondary">Cancel</button>
+					<button id="confirm-delete" class="btn-primary btn-danger">
+						Delete Plan
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			document.addEventListener("DOMContentLoaded", () => {
+				document.querySelectorAll(".open-modal").forEach((btn) => {
+					btn.addEventListener("click", () => {
+						const modalId = btn.getAttribute("data-target");
+						const modal = document.getElementById(modalId);
+						if (modal) {
+							modal.style.display = "flex";
+							document.body.style.overflow = "hidden";
+						}
+					});
+				});
+				document.querySelectorAll(".close-modal").forEach((span) => {
+					span.addEventListener("click", () => {
+						span.closest(".modal-overlay").style.display = "none";
+						document.body.style.overflow = "auto";
+					});
+				});
+			});
+		</script>
+	</body>
+</html>
